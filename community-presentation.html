@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IRIS — Ilicity Resident Information System</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --gold:#d4a017;--gold2:#f0c040;--green:#16a34a;--green2:#22c55e;
+  --blue:#1d4ed8;--blue2:#3b82f6;--red:#dc2626;
+  --dark:#0a1628;--dark2:#0f2240;--dark3:#162d4f;
+  --text:#f0f4ff;--muted:#94a3b8;
+  --glass:rgba(255,255,255,0.08);--glassBorder:rgba(255,255,255,0.15);
+}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--dark);color:var(--text);overflow:hidden;height:100vh;}
+
+/* ── Slides ── */
+.slides{width:100%;height:100vh;position:relative;}
+.slide{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;
+  padding:2.5rem 3.5rem;opacity:0;pointer-events:none;
+  transition:opacity 0.55s cubic-bezier(.4,0,.2,1),transform 0.55s cubic-bezier(.4,0,.2,1);
+  transform:translateX(70px);}
+.slide.active{opacity:1;pointer-events:all;transform:translateX(0);}
+.slide.prev{opacity:0;transform:translateX(-70px);}
+
+/* Backgrounds */
+.bg-hero{background:radial-gradient(ellipse at 60% 30%,#1a3a6b 0%,#0a1628 60%),url('') center/cover;}
+.bg-problem{background:linear-gradient(145deg,#1a0a0a 0%,#0a1628 50%,#1a1a0a 100%);}
+.bg-what{background:linear-gradient(145deg,#0a1628 0%,#0d2545 60%,#0f1f3d 100%);}
+.bg-residents{background:linear-gradient(145deg,#0a2010 0%,#0a1628 60%,#0d2010 100%);}
+.bg-projects{background:linear-gradient(145deg,#0a0a28 0%,#0a1628 60%,#1a1028 100%);}
+.bg-analytics{background:linear-gradient(145deg,#0a1a28 0%,#0a1628 60%,#0a2028 100%);}
+.bg-id{background:linear-gradient(145deg,#1a0a20 0%,#0a1628 60%,#0a1628 100%);}
+.bg-reports{background:linear-gradient(145deg,#0a200a 0%,#0a1628 100%);}
+.bg-security{background:linear-gradient(145deg,#1a1a0a 0%,#0a1628 60%,#0a0a1a 100%);}
+.bg-start{background:linear-gradient(145deg,#0a1628 0%,#0d2545 100%);}
+.bg-vision{background:radial-gradient(ellipse at 40% 60%,#1a3a6b 0%,#0a1628 70%);}
+
+/* Decorative blob */
+.blob{position:absolute;border-radius:50%;filter:blur(70px);opacity:0.12;pointer-events:none;}
+
+/* ── Typography ── */
+.eyebrow{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.15em;
+  padding:.35rem 1rem;border-radius:100px;display:inline-block;margin-bottom:1rem;}
+.eyebrow-gold{background:rgba(212,160,23,.18);border:1px solid rgba(212,160,23,.35);color:var(--gold2);}
+.eyebrow-green{background:rgba(22,163,74,.18);border:1px solid rgba(22,163,74,.35);color:var(--green2);}
+.eyebrow-blue{background:rgba(29,78,216,.25);border:1px solid rgba(59,130,246,.35);color:#93c5fd;}
+.eyebrow-red{background:rgba(220,38,38,.18);border:1px solid rgba(220,38,38,.35);color:#fca5a5;}
+.eyebrow-purple{background:rgba(124,58,237,.18);border:1px solid rgba(139,92,246,.35);color:#c4b5fd;}
+h1{font-size:clamp(2rem,5vw,3.4rem);font-weight:900;line-height:1.08;text-align:center;}
+h2{font-size:clamp(1.4rem,3.2vw,2.1rem);font-weight:800;text-align:center;margin-bottom:.5rem;}
+.lead{font-size:1.05rem;color:var(--muted);line-height:1.65;max-width:640px;text-align:center;margin:0 auto;}
+
+/* ── Glass card ── */
+.glass{background:var(--glass);border:1px solid var(--glassBorder);border-radius:16px;
+  backdrop-filter:blur(14px);padding:1.4rem 1.5rem;}
+.glass-strong{background:rgba(255,255,255,0.11);border:1px solid rgba(255,255,255,0.2);}
+
+/* ── Grids ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1.1rem;width:100%;max-width:880px;}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;width:100%;max-width:940px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;width:100%;max-width:940px;}
+
+/* ── Benefit card ── */
+.bcard{display:flex;flex-direction:column;gap:.35rem;}
+.bcard .icon{font-size:2rem;margin-bottom:.2rem;}
+.bcard h3{font-size:.98rem;font-weight:700;color:var(--text);}
+.bcard p{font-size:.82rem;color:var(--muted);line-height:1.55;}
+
+/* ── Quote ── */
+.quote{font-size:1.1rem;font-style:italic;color:#cbd5e1;line-height:1.6;
+  border-left:3px solid var(--gold);padding-left:1rem;max-width:580px;margin:0 auto;}
+
+/* ── Stat pill ── */
+.stat-pill{text-align:center;padding:.8rem 1.2rem;}
+.stat-num{font-size:2.6rem;font-weight:900;line-height:1;}
+.stat-label{font-size:.78rem;color:var(--muted);margin-top:.25rem;line-height:1.3;}
+
+/* ── Pain point ── */
+.pain{display:flex;gap:.9rem;align-items:flex-start;padding:.8rem 0;border-bottom:1px solid rgba(255,255,255,.06);}
+.pain:last-child{border-bottom:none;}
+.pain-icon{font-size:1.4rem;flex-shrink:0;margin-top:.1rem;}
+.pain h4{font-size:.92rem;font-weight:700;color:#fca5a5;margin-bottom:.15rem;}
+.pain p{font-size:.82rem;color:var(--muted);line-height:1.5;}
+
+/* ── Step ── */
+.step{display:flex;gap:1rem;align-items:flex-start;}
+.step-num{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:.95rem;flex-shrink:0;margin-top:.1rem;}
+.step h4{font-size:.95rem;font-weight:700;margin-bottom:.2rem;}
+.step p{font-size:.82rem;color:var(--muted);line-height:1.5;}
+
+/* ── Comparison ── */
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:1rem;width:100%;max-width:820px;}
+.compare-col h3{font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:.5rem 1rem;border-radius:8px;margin-bottom:.7rem;text-align:center;}
+.compare-col li{font-size:.83rem;color:var(--muted);padding:.35rem 0;border-bottom:1px solid rgba(255,255,255,.05);display:flex;gap:.5rem;align-items:flex-start;line-height:1.4;}
+.compare-col li:last-child{border-bottom:none;}
+
+/* ── Progress bar ── */
+.pbar-wrap{margin-bottom:.9rem;}
+.pbar-label{display:flex;justify-content:space-between;font-size:.82rem;color:var(--muted);margin-bottom:.3rem;}
+.pbar{height:10px;background:rgba(255,255,255,.08);border-radius:100px;overflow:hidden;}
+.pbar-fill{height:100%;border-radius:100px;}
+
+/* ── Feature list ── */
+.flist li{display:flex;gap:.7rem;align-items:flex-start;padding:.45rem 0;font-size:.88rem;color:#cbd5e1;line-height:1.5;}
+.flist li span.ck{color:var(--green2);font-size:1.1rem;flex-shrink:0;margin-top:.05rem;}
+
+/* ── Hero accent ── */
+.hero-pill{display:inline-flex;align-items:center;gap:.5rem;padding:.45rem 1.1rem;
+  background:rgba(212,160,23,.12);border:1px solid rgba(212,160,23,.3);border-radius:100px;
+  font-size:.82rem;color:var(--gold2);margin-right:.4rem;margin-top:.4rem;}
+
+/* ── Nav ── */
+nav{position:fixed;bottom:1.8rem;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:.8rem;
+  background:rgba(10,22,40,.88);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.1);
+  border-radius:100px;padding:.55rem 1.3rem;z-index:100;}
+.nav-btn{background:none;border:none;color:var(--muted);font-size:1.05rem;cursor:pointer;
+  padding:.25rem .5rem;border-radius:8px;transition:all .2s;}
+.nav-btn:hover{color:#fff;background:rgba(255,255,255,.1);}
+.dot-nav{display:flex;gap:.4rem;}
+.dot{width:7px;height:7px;border-radius:50%;background:#334155;cursor:pointer;transition:all .2s;}
+.dot.active{background:var(--gold);transform:scale(1.35);}
+.nav-ctr{font-size:.82rem;color:#475569;min-width:52px;text-align:center;}
+
+/* ── Progress top ── */
+.pbar-top{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--green2));transition:width .4s ease;z-index:200;}
+
+/* ── Watermark ── */
+.wm{position:fixed;top:1.1rem;left:1.4rem;z-index:100;display:flex;align-items:center;gap:.5rem;}
+.wm-dot{width:10px;height:10px;border-radius:50%;background:var(--gold);}
+.wm-text{font-size:.82rem;font-weight:700;color:var(--gold2);letter-spacing:.05em;}
+.slide-num{position:fixed;top:1.1rem;right:1.4rem;font-size:.75rem;color:#475569;z-index:100;}
+</style>
+</head>
+<body>
+<div class="pbar-top" id="pTop"></div>
+<div class="wm"><div class="wm-dot"></div><span class="wm-text">IRIS — Ilisan Remo</span></div>
+<div class="slide-num" id="sNum">1 / 12</div>
+<div class="slides" id="slides"></div>
+<nav>
+  <button class="nav-btn" onclick="go(-1)">&#8592;</button>
+  <div class="dot-nav" id="dots"></div>
+  <div class="nav-ctr" id="ctr">1 / 12</div>
+  <button class="nav-btn" onclick="go(1)">&#8594;</button>
+</nav>
+<script>
+const slides=[
+`<div class="slide bg-hero active" id="s0">
+  <div class="blob" style="width:500px;height:500px;background:#1d4ed8;top:-180px;right:-120px;"></div>
+  <div class="blob" style="width:380px;height:380px;background:#d4a017;bottom:-120px;left:-80px;"></div>
+  <div class="eyebrow eyebrow-gold">🇳🇬 Ilisan Remo — Ogun State</div>
+  <h1>Introducing<br><span style="color:var(--gold2)">IRIS</span></h1>
+  <p class="lead" style="margin-top:.9rem;font-size:1.1rem">A digital platform built <strong style="color:#fff">specifically for Ilisan Remo</strong> — helping our community leaders manage residents, track development projects, and build a stronger, better-documented community.</p>
+  <div style="margin-top:1.5rem;display:flex;flex-wrap:wrap;justify-content:center;gap:.4rem">
+    <span class="hero-pill">👥 Know Every Resident</span>
+    <span class="hero-pill">🏗️ Track Every Project</span>
+    <span class="hero-pill">📊 Make Better Decisions</span>
+    <span class="hero-pill">🪪 Digital Resident IDs</span>
+  </div>
+  <p style="margin-top:1.6rem;font-size:.8rem;color:#475569">Use ← → arrow keys or the dots below to navigate</p>
+</div>`,
+
+`<div class="slide bg-problem" id="s1">
+  <div class="blob" style="width:400px;height:400px;background:#dc2626;top:-160px;right:-80px;"></div>
+  <div class="eyebrow eyebrow-red">⚠️ The Challenge We Face</div>
+  <h2>Our community is growing — but managing it is getting harder</h2>
+  <div style="width:100%;max-width:780px;margin-top:1.2rem">
+    <div class="glass">
+      <div class="pain"><span class="pain-icon">📋</span><div><h4>No Central Record of Residents</h4><p>Information about who lives in Ilisan Remo is scattered across paper registers, notebooks, and people's memories. It is nearly impossible to know the true population or find a resident quickly.</p></div></div>
+      <div class="pain"><span class="pain-icon">🏗️</span><div><h4>Development Projects Are Hard to Track</h4><p>Community projects — roads, water, electricity, buildings — often lack proper documentation. It is difficult to know which projects are ongoing, who is responsible, or how much has been spent.</p></div></div>
+      <div class="pain"><span class="pain-icon">📊</span><div><h4>Leaders Decide Without Data</h4><p>How many youths are unemployed? How many homes lack clean water? Without answers, it is hard to plan or justify requests to government and partners.</p></div></div>
+      <div class="pain"><span class="pain-icon">🪪</span><div><h4>No Verified Proof of Residency</h4><p>Residents have no official digital identity tied to the community. This affects access to opportunities, government programmes, and community benefits.</p></div></div>
+    </div>
+  </div>
+</div>`,
+
+`<div class="slide bg-what" id="s2">
+  <div class="blob" style="width:420px;height:420px;background:#1d4ed8;bottom:-120px;left:-100px;"></div>
+  <div class="eyebrow eyebrow-blue">💡 What is IRIS?</div>
+  <h2>One secure, easy-to-use platform for<br>everything in our community</h2>
+  <p class="lead" style="margin-top:.6rem">IRIS is a digital management system built for Ilisan Remo. Think of it as a <strong style="color:#fff">complete digital office</strong> for community leaders — accessible from any phone, tablet, or computer.</p>
+  <div class="g3" style="margin-top:1.3rem;max-width:860px">
+    <div class="glass bcard"><div class="icon">👥</div><h3>Resident Registry</h3><p>A complete, searchable database of every resident with their profile, contact, and demographic details.</p></div>
+    <div class="glass bcard"><div class="icon">🏗️</div><h3>Project Tracker</h3><p>Create, assign, and monitor every community development project from start to finish — with budgets and deadlines.</p></div>
+    <div class="glass bcard"><div class="icon">📊</div><h3>Community Dashboard</h3><p>Instantly see charts and statistics about your community — population, employment, infrastructure, and more.</p></div>
+    <div class="glass bcard"><div class="icon">🪪</div><h3>Digital ID Cards</h3><p>Every resident gets a secure digital identity card with a QR code — downloadable as a PDF.</p></div>
+    <div class="glass bcard"><div class="icon">📤</div><h3>Instant Reports</h3><p>Generate and download demographic reports in seconds — filtered exactly how you need them.</p></div>
+    <div class="glass bcard"><div class="icon">🔒</div><h3>Secure & Private</h3><p>All data is protected. Only authorised leaders and administrators can access sensitive information.</p></div>
+  </div>
+</div>`,
+
+`<div class="slide bg-residents" id="s3">
+  <div class="blob" style="width:400px;height:400px;background:#16a34a;top:-150px;right:-80px;"></div>
+  <div class="eyebrow eyebrow-green">👥 Benefit 1</div>
+  <h2>Know Every Resident in Ilisan Remo</h2>
+  <div class="g2" style="margin-top:1rem;max-width:860px">
+    <div class="glass">
+      <h3 style="color:var(--green2);margin-bottom:.8rem;font-size:.9rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em">What IRIS captures for each resident</h3>
+      <ul class="flist">
+        <li><span class="ck">✔</span>Full name, date of birth, gender, photo</li>
+        <li><span class="ck">✔</span>Home address, street, and zone in Ilisan Remo</li>
+        <li><span class="ck">✔</span>Phone number and emergency contact</li>
+        <li><span class="ck">✔</span>Education level and employment status</li>
+        <li><span class="ck">✔</span>Marital status, number of children, household size</li>
+        <li><span class="ck">✔</span>Access to electricity, clean water, sanitation</li>
+        <li><span class="ck">✔</span>Religion, ethnicity, and indigene status</li>
+        <li><span class="ck">✔</span>Voter registration and taxpayer status</li>
+        <li><span class="ck">✔</span>Civic participation and volunteer activities</li>
+      </ul>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:1rem">
+      <div class="glass">
+        <h3 style="color:var(--green2);margin-bottom:.6rem;font-size:.9rem;font-weight:700">What this means for leaders</h3>
+        <ul class="flist">
+          <li><span class="ck">✔</span>Find any resident in seconds by name, ID, or street</li>
+          <li><span class="ck">✔</span>Know exactly how many people live in each zone</li>
+          <li><span class="ck">✔</span>Identify vulnerable households needing support</li>
+          <li><span class="ck">✔</span>Build verified lists for elections or programmes</li>
+          <li><span class="ck">✔</span>Prove to government how large our community is</li>
+        </ul>
+      </div>
+      <div class="glass" style="text-align:center;padding:1.2rem">
+        <div style="font-size:2.5rem;font-weight:900;color:var(--green2)">35+</div>
+        <div style="font-size:.82rem;color:var(--muted)">Data points captured<br>per resident profile</div>
+      </div>
+    </div>
+  </div>
+</div>`,
+
+`<div class="slide bg-projects" id="s4">
+  <div class="blob" style="width:420px;height:420px;background:#6d28d9;bottom:-130px;right:-100px;"></div>
+  <div class="eyebrow eyebrow-purple">🏗️ Benefit 2</div>
+  <h2>Track Every Community Project — Start to Finish</h2>
+  <div class="g2" style="margin-top:1rem;max-width:860px">
+    <div class="glass">
+      <h3 style="color:#c4b5fd;margin-bottom:.8rem;font-size:.9rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em">For every project, IRIS records</h3>
+      <ul class="flist">
+        <li><span class="ck" style="color:#a78bfa">✔</span>Project name, description, and location (street/zone)</li>
+        <li><span class="ck" style="color:#a78bfa">✔</span>Start date and expected completion date</li>
+        <li><span class="ck" style="color:#a78bfa">✔</span>Current status — Pending, In Progress, Completed</li>
+        <li><span class="ck" style="color:#a78bfa">✔</span>Budget allocated and actual money spent</li>
+        <li><span class="ck" style="color:#a78bfa">✔</span>Team members responsible for the project</li>
+        <li><span class="ck" style="color:#a78bfa">✔</span>Individual tasks and sub-activities within the project</li>
+      </ul>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:1rem">
+      <div class="glass">
+        <h3 style="color:#c4b5fd;margin-bottom:.7rem;font-size:.9rem;font-weight:700">Real examples of what we can track</h3>
+        <div style="display:flex;flex-direction:column;gap:.5rem">
+          <div style="display:flex;align-items:center;gap:.7rem;font-size:.85rem;padding:.4rem .6rem;background:rgba(139,92,246,.1);border-radius:8px;border:1px solid rgba(139,92,246,.2)"><span>🛣️</span> Road rehabilitation — Akinlabi Street</div>
+          <div style="display:flex;align-items:center;gap:.7rem;font-size:.85rem;padding:.4rem .6rem;background:rgba(16,185,129,.1);border-radius:8px;border:1px solid rgba(16,185,129,.2)"><span>💧</span> Borehole construction — Zone B</div>
+          <div style="display:flex;align-items:center;gap:.7rem;font-size:.85rem;padding:.4rem .6rem;background:rgba(245,158,11,.1);border-radius:8px;border:1px solid rgba(245,158,11,.2)"><span>💡</span> Street light installation — Central Area</div>
+          <div style="display:flex;align-items:center;gap:.7rem;font-size:.85rem;padding:.4rem .6rem;background:rgba(59,130,246,.1);border-radius:8px;border:1px solid rgba(59,130,246,.2)"><span>🏫</span> Town hall renovation — Main Square</div>
+        </div>
+      </div>
+      <div class="glass" style="text-align:center;padding:1rem">
+        <p style="font-size:.85rem;color:var(--muted);font-style:italic">"No more forgetting what was promised, who was responsible, or how much was budgeted. Every project is documented forever."</p>
+      </div>
+    </div>
+  </div>
+</div>`,
+
+`<div class="slide bg-analytics" id="s5">
+  <div class="blob" style="width:450px;height:450px;background:#0369a1;top:-170px;left:-100px;"></div>
+  <div class="eyebrow eyebrow-blue">📊 Benefit 3</div>
+  <h2>Make Decisions Based on Real Data — Not Guesswork</h2>
+  <p class="lead" style="margin-bottom:1.1rem">The IRIS dashboard gives leaders an instant picture of the entire community — updated in real time.</p>
+  <div class="g2" style="max-width:880px">
+    <div class="glass">
+      <h3 style="color:#93c5fd;font-size:.9rem;font-weight:700;margin-bottom:.8rem;text-transform:uppercase;letter-spacing:.06em">What the dashboard shows</h3>
+      <div class="pbar-wrap"><div class="pbar-label"><span>👨‍👩‍👧 Gender & Age Distribution</span><span style="color:var(--green2)">Live</span></div><div class="pbar"><div class="pbar-fill" style="width:85%;background:linear-gradient(90deg,#3b82f6,#60a5fa)"></div></div></div>
+      <div class="pbar-wrap"><div class="pbar-label"><span>🎓 Education Levels</span><span style="color:var(--green2)">Live</span></div><div class="pbar"><div class="pbar-fill" style="width:75%;background:linear-gradient(90deg,#16a34a,#22c55e)"></div></div></div>
+      <div class="pbar-wrap"><div class="pbar-label"><span>💼 Employment Status</span><span style="color:var(--green2)">Live</span></div><div class="pbar"><div class="pbar-fill" style="width:70%;background:linear-gradient(90deg,#7c3aed,#a78bfa)"></div></div></div>
+      <div class="pbar-wrap"><div class="pbar-label"><span>💡 Infrastructure Access</span><span style="color:var(--green2)">Live</span></div><div class="pbar"><div class="pbar-fill" style="width:60%;background:linear-gradient(90deg,#d97706,#fbbf24)"></div></div></div>
+      <div class="pbar-wrap" style="margin-bottom:0"><div class="pbar-label"><span>📈 Population Growth Trend</span><span style="color:var(--green2)">Live</span></div><div class="pbar"><div class="pbar-fill" style="width:90%;background:linear-gradient(90deg,#dc2626,#f87171)"></div></div></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:.85rem">
+      <div class="glass bcard glass-strong" style="border-color:rgba(212,160,23,.25)"><div class="icon">🏛️</div><h3>Better Advocacy to Government</h3><p>When requesting funds or infrastructure, show government officials exact numbers — how many residents lack water, roads, electricity. Data speaks louder than words.</p></div>
+      <div class="glass bcard glass-strong"><div class="icon">🎯</div><h3>Target the Right People</h3><p>Identify the unemployed youth, the elderly without support, or the households without sanitation — and direct help precisely where it is needed most.</p></div>
+      <div class="glass bcard glass-strong"><div class="icon">🌍</div><h3>Filter by Zone or Street</h3><p>See statistics for each zone of Ilisan Remo separately, so every part of the community gets equal attention.</p></div>
+    </div>
+  </div>
+</div>`,
+
+`<div class="slide bg-id" id="s6">
+  <div class="blob" style="width:400px;height:400px;background:#7c3aed;top:-150px;right:-80px;"></div>
+  <div class="eyebrow eyebrow-purple">🪪 Benefit 4</div>
+  <h2>Every Resident Gets a Verified Digital Identity</h2>
+  <div class="g2" style="margin-top:1rem;max-width:860px">
+    <div class="glass" style="display:flex;flex-direction:column;gap:.8rem;align-items:center;text-align:center;padding:2rem 1.5rem">
+      <div style="width:220px;background:linear-gradient(135deg,#1d4ed8,#7c3aed);border-radius:14px;padding:1.2rem;box-shadow:0 20px 60px rgba(0,0,0,.4)">
+        <div style="font-size:.6rem;font-weight:800;letter-spacing:.15em;color:rgba(255,255,255,.6);margin-bottom:.8rem">ILISAN REMO COMMUNITY</div>
+        <div style="width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,.2);margin:0 auto .6rem;display:flex;align-items:center;justify-content:center;font-size:1.8rem">👤</div>
+        <div style="font-weight:700;font-size:.9rem">ADEBAYO JOHNSON</div>
+        <div style="font-size:.65rem;color:rgba(255,255,255,.7);margin:.2rem 0">Zone B · Adeola Street</div>
+        <div style="font-size:.6rem;font-weight:700;letter-spacing:.1em;color:var(--gold2);margin-top:.5rem">COMM-63F4A12B</div>
+        <div style="margin-top:.7rem;background:rgba(255,255,255,.9);border-radius:8px;padding:.4rem;font-size:.6rem;color:#000;font-weight:600">▣ QR CODE ▣</div>
+      </div>
+      <p style="font-size:.82rem;color:var(--muted);margin-top:.3rem">Sample resident ID card — downloadable as PDF</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:1rem">
+      <div class="glass">
+        <h3 style="color:#c4b5fd;font-size:.9rem;font-weight:700;margin-bottom:.7rem">What the ID card contains</h3>
+        <ul class="flist">
+          <li><span class="ck" style="color:#a78bfa">✔</span>Full name and profile photograph</li>
+          <li><span class="ck" style="color:#a78bfa">✔</span>Unique community ID number (e.g. COMM-63F4A12B)</li>
+          <li><span class="ck" style="color:#a78bfa">✔</span>Date of birth, gender, and address in Ilisan</li>
+          <li><span class="ck" style="color:#a78bfa">✔</span>QR code linking to verified community profile</li>
+          <li><span class="ck" style="color:#a78bfa">✔</span>Available as a printed or downloadable PDF</li>
+        </ul>
+      </div>
+      <div class="glass">
+        <h3 style="color:#c4b5fd;font-size:.9rem;font-weight:700;margin-bottom:.7rem">Why this matters</h3>
+        <ul class="flist">
+          <li><span class="ck" style="color:#a78bfa">✔</span>Verifiable proof that someone is from Ilisan Remo</li>
+          <li><span class="ck" style="color:#a78bfa">✔</span>Access to community programmes and benefits</li>
+          <li><span class="ck" style="color:#a78bfa">✔</span>Useful for scholarships, employment, and government ID</li>
+          <li><span class="ck" style="color:#a78bfa">✔</span>Quickly identify residents at community events</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>`,
+
+`<div class="slide bg-reports" id="s7">
+  <div class="blob" style="width:380px;height:380px;background:#16a34a;bottom:-120px;left:-80px;"></div>
+  <div class="eyebrow eyebrow-green">📤 Benefit 5</div>
+  <h2>Generate Powerful Reports in Seconds</h2>
+  <p class="lead" style="margin-bottom:1.1rem">No more spending days compiling data. IRIS can produce any community report instantly — filtered exactly as needed.</p>
+  <div class="g3" style="max-width:900px">
+    <div class="glass bcard"><div class="icon">👩‍🎓</div><h3>Education Report</h3><p>How many residents have no formal education? How many have tertiary qualifications? Use this to apply for scholarship programmes.</p></div>
+    <div class="glass bcard"><div class="icon">💼</div><h3>Employment Report</h3><p>Know exactly how many residents are unemployed, self-employed, or retired. Make the case for government job programmes.</p></div>
+    <div class="glass bcard"><div class="icon">🏠</div><h3>Infrastructure Report</h3><p>How many homes in each zone lack electricity, clean water, or sanitation? Present precise numbers to funders and agencies.</p></div>
+    <div class="glass bcard"><div class="icon">👨‍👩‍👦</div><h3>Demographics Report</h3><p>Age groups, gender ratios, household sizes — everything needed for proper community planning and resource allocation.</p></div>
+    <div class="glass bcard"><div class="icon">🗳️</div><h3>Civic Participation</h3><p>See voter registration rates and community involvement levels to drive engagement campaigns.</p></div>
+    <div class="glass bcard"><div class="icon">📥</div><h3>Excel Download</h3><p>Every report downloads as an Excel spreadsheet — ready to share with government, NGOs, donors, or partners.</p></div>
+  </div>
+</div>`,
+
+`<div class="slide bg-security" id="s8">
+  <div class="blob" style="width:420px;height:420px;background:#d4a017;top:-160px;right:-100px;"></div>
+  <div class="eyebrow eyebrow-gold">🔒 Your Data is Safe</div>
+  <h2>Resident Data is Protected and<br>Under Community Control</h2>
+  <p class="lead" style="margin-bottom:1.1rem">We understand that community information is sensitive. IRIS is built with strong protections at every level.</p>
+  <div class="g4" style="max-width:920px">
+    <div class="glass bcard glass-strong" style="border-color:rgba(212,160,23,.2)"><div class="icon">🛡️</div><h3>Access Control</h3><p>Only appointed leaders and administrators can view or edit sensitive resident data. Regular users see only what they need.</p></div>
+    <div class="glass bcard glass-strong"><div class="icon">🔑</div><h3>Secure Passwords</h3><p>All passwords are encrypted using military-grade security. No administrator can read another person's password.</p></div>
+    <div class="glass bcard glass-strong"><div class="icon">📜</div><h3>Activity Logs</h3><p>Every action in the system is logged — who did what and when. Full accountability and audit trail at all times.</p></div>
+    <div class="glass bcard glass-strong"><div class="icon">♻️</div><h3>No Accidental Loss</h3><p>Deleted records are not permanently removed immediately — they can be recovered if a mistake is made. Your data is never lost.</p></div>
+  </div>
+  <div class="glass" style="margin-top:1rem;max-width:700px;text-align:center;padding:1rem 1.5rem">
+    <p style="font-size:.9rem;color:#cbd5e1">IRIS uses the same security standards trusted by banks, hospitals, and government institutions worldwide. <strong style="color:#fff">Your community's data stays in your community's hands.</strong></p>
+  </div>
+</div>`,
+
+`<div class="slide bg-start" id="s9">
+  <div class="blob" style="width:400px;height:400px;background:#1d4ed8;bottom:-130px;right:-90px;"></div>
+  <div class="eyebrow eyebrow-blue">🚀 Getting Started</div>
+  <h2>Simple to Use — No Technical Skills Required</h2>
+  <p class="lead" style="margin-bottom:1.1rem">Any community leader, secretary, or administrator can use IRIS from a smartphone, tablet, or computer.</p>
+  <div style="display:flex;flex-direction:column;gap:.8rem;width:100%;max-width:700px">
+    <div class="glass step"><div class="step-num" style="background:rgba(212,160,23,.2);color:var(--gold2);border:1px solid rgba(212,160,23,.3)">1</div><div><h4>Leaders and administrators are registered on the platform</h4><p>The system administrator creates accounts for community leaders and sets their access level (Super Admin, Admin, or User).</p></div></div>
+    <div class="glass step"><div class="step-num" style="background:rgba(22,163,74,.2);color:var(--green2);border:1px solid rgba(22,163,74,.3)">2</div><div><h4>Residents register and complete their profiles</h4><p>Residents visit the platform, create an account, and fill in their personal and demographic information at their own pace. Administrators can also register residents on their behalf.</p></div></div>
+    <div class="glass step"><div class="step-num" style="background:rgba(59,130,246,.2);color:#93c5fd;border:1px solid rgba(59,130,246,.3)">3</div><div><h4>Leaders log in and access the community dashboard</h4><p>From any device, leaders see live statistics, manage projects, search for residents, and download reports — all from one screen.</p></div></div>
+    <div class="glass step"><div class="step-num" style="background:rgba(124,58,237,.2);color:#c4b5fd;border:1px solid rgba(124,58,237,.3)">4</div><div><h4>The community grows stronger with every data point added</h4><p>As more residents register, the dashboard becomes richer, reports become more powerful, and decisions become better informed.</p></div></div>
+  </div>
+</div>`,
+
+`<div class="slide bg-what" id="s10">
+  <div class="blob" style="width:420px;height:420px;background:#16a34a;top:-160px;left:-80px;"></div>
+  <div class="eyebrow eyebrow-green">⚖️ Before vs. After IRIS</div>
+  <h2>The Difference IRIS Makes</h2>
+  <div class="compare" style="margin-top:1rem">
+    <div class="compare-col">
+      <h3 style="background:rgba(220,38,38,.15);border:1px solid rgba(220,38,38,.25);color:#fca5a5">❌ Without IRIS</h3>
+      <ul>
+        <li><span>📋</span>Resident records kept in paper registers — easy to lose or damage</li>
+        <li><span>🔍</span>Finding a resident requires calling multiple people</li>
+        <li><span>🏗️</span>Projects forgotten after the meeting that announced them</li>
+        <li><span>💸</span>No record of how community funds were spent</li>
+        <li><span>📊</span>Leaders guess at population and demographics</li>
+        <li><span>🏛️</span>Government requests for community data cannot be fulfilled</li>
+        <li><span>🪪</span>No proof of residency for community members</li>
+        <li><span>⏱️</span>Weeks spent compiling reports manually</li>
+      </ul>
+    </div>
+    <div class="compare-col">
+      <h3 style="background:rgba(22,163,74,.15);border:1px solid rgba(22,163,74,.25);color:var(--green2)">✅ With IRIS</h3>
+      <ul>
+        <li><span>✅</span>Every resident's record is stored securely in the cloud</li>
+        <li><span>✅</span>Any resident found in seconds by name, ID, or zone</li>
+        <li><span>✅</span>All projects tracked with tasks, timelines, and budgets</li>
+        <li><span>✅</span>Full financial transparency on all community spending</li>
+        <li><span>✅</span>Live dashboard with accurate population and demographics</li>
+        <li><span>✅</span>Government data requests answered in minutes</li>
+        <li><span>✅</span>Every resident has a verified digital ID with QR code</li>
+        <li><span>✅</span>Any report generated and downloaded in seconds</li>
+      </ul>
+    </div>
+  </div>
+</div>`,
+
+`<div class="slide bg-vision" id="s11">
+  <div class="blob" style="width:500px;height:500px;background:#d4a017;top:-200px;right:-150px;"></div>
+  <div class="blob" style="width:380px;height:380px;background:#1d4ed8;bottom:-120px;left:-80px;"></div>
+  <div class="eyebrow eyebrow-gold">🌟 Our Vision</div>
+  <h1 style="font-size:clamp(1.8rem,4.5vw,3rem)">A <span style="color:var(--gold2)">Stronger, Smarter</span><br>Ilisan Remo — Together</h1>
+  <p class="lead" style="margin-top:.9rem">IRIS is more than a software platform. It is a commitment to building a community where every resident is seen, every project is accountable, and every leader has the information they need to serve effectively.</p>
+  <div class="g4" style="margin-top:1.4rem;max-width:880px">
+    <div class="glass stat-pill"><div class="stat-num" style="color:var(--gold2)">1</div><div class="stat-label">Centralised register for all Ilisan residents</div></div>
+    <div class="glass stat-pill"><div class="stat-num" style="color:var(--green2)">📊</div><div class="stat-label">Data-driven advocacy to Ogun State Government</div></div>
+    <div class="glass stat-pill"><div class="stat-num" style="color:#93c5fd">🪪</div><div class="stat-label">Digital IDs for every son and daughter of Ilisan</div></div>
+    <div class="glass stat-pill"><div class="stat-num" style="color:#c4b5fd">🏆</div><div class="stat-label">Accountable, transparent community development</div></div>
+  </div>
+  <div class="glass" style="margin-top:1.3rem;max-width:680px;text-align:center;padding:1.1rem 2rem;border-color:rgba(212,160,23,.25)">
+    <p style="font-size:1rem;color:#e2e8f0;font-style:italic">"The strength of Ilisan Remo has always been in our people. IRIS gives our leaders the tools to harness that strength — and prove it to the world."</p>
+    <p style="font-size:.75rem;color:var(--gold2);margin-top:.6rem;font-weight:700;letter-spacing:.05em">ILISAN REMO (AGAKANOWO) — REMO LAND, OGUN STATE · IRIS — IRIS</p>
+  </div>
+</div>`
+];
+
+const total=slides.length;
+const container=document.getElementById('slides');
+const dotsEl=document.getElementById('dots');
+let cur=0;
+
+slides.forEach((html,i)=>{
+  const d=document.createElement('div');d.innerHTML=html;
+  const el=d.firstElementChild;
+  if(i!==0)el.classList.remove('active');
+  container.appendChild(el);
+  const dot=document.createElement('div');dot.className='dot'+(i===0?' active':'');
+  dot.onclick=()=>goTo(i);dotsEl.appendChild(dot);
+});
+
+function update(){
+  document.querySelectorAll('.slide').forEach((el,i)=>{
+    el.classList.remove('active','prev');
+    if(i===cur)el.classList.add('active');
+    else if(i<cur)el.classList.add('prev');
+  });
+  document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===cur));
+  const txt=`${cur+1} / ${total}`;
+  document.getElementById('ctr').textContent=txt;
+  document.getElementById('sNum').textContent=txt;
+  document.getElementById('pTop').style.width=`${((cur+1)/total)*100}%`;
+}
+function goTo(n){cur=Math.max(0,Math.min(total-1,n));update();}
+function go(d){goTo(cur+d);}
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='ArrowDown')go(1);
+  if(e.key==='ArrowLeft'||e.key==='ArrowUp')go(-1);
+});
+let tx=0;
+document.addEventListener('touchstart',e=>{tx=e.touches[0].clientX;});
+document.addEventListener('touchend',e=>{const dx=tx-e.changedTouches[0].clientX;if(Math.abs(dx)>50)go(dx>0?1:-1);});
+update();
+</script>
+</body>
+</html>
