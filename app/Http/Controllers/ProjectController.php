@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ProjectCreated;
+use App\Events\UserAssignedToProject;
 use App\Models\Project;
 use App\Models\Street;
 use App\Models\Task;
 use App\Models\User;
+use App\Notifications\ProjectStatusChanged;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -46,6 +49,12 @@ class ProjectController extends Controller
         try {
             $project = Project::create($data);
             $project->users()->sync($data['user_ids'] ?? []);
+
+            // Broadcast & notify assigned users
+            ProjectCreated::dispatch($project);
+            foreach ($project->users as $member) {
+                UserAssignedToProject::dispatch($project, $member);
+            }
 
             Log::info('Project created successfully', [
                 'project_id' => $project->id,
@@ -96,8 +105,16 @@ class ProjectController extends Controller
         ]);
 
         try {
+            $oldStatus = $project->status;
             $project->update($data);
             $project->users()->sync($data['user_ids'] ?? []);
+
+            // Notify members if status changed
+            if ($oldStatus !== $project->status) {
+                foreach ($project->users as $member) {
+                    $member->notify(new ProjectStatusChanged($project, $oldStatus));
+                }
+            }
 
             Log::info('Project updated successfully', [
                 'project_id' => $project->id,
@@ -210,6 +227,37 @@ class ProjectController extends Controller
 
         return redirect()->route('projects.show', $project)
             ->with('success', 'User removed successfully.');
+    }
+
+    /**
+     * Return JSON of all projects as FullCalendar events, or the calendar view.
+     */
+    public function calendar(Request $request)
+    {
+        $projects = Project::select('id', 'title', 'status', 'start_date', 'end_date')->get();
+
+        $statusColors = [
+            'pending'     => '#fbbf24',
+            'in_progress' => '#60a5fa',
+            'completed'   => '#34d399',
+            'cancelled'   => '#f87171',
+        ];
+
+        $events = $projects->map(fn ($p) => [
+            'id'                => $p->id,
+            'title'             => $p->title,
+            'start'             => optional($p->start_date)->toDateString(),
+            'end'               => optional($p->end_date)->toDateString(),
+            'backgroundColor'   => $statusColors[$p->status] ?? '#a78bfa',
+            'borderColor'       => $statusColors[$p->status] ?? '#a78bfa',
+            'url'               => route('projects.show', $p->id),
+        ]);
+
+        if ($request->wantsJson()) {
+            return response()->json($events);
+        }
+
+        return view('projects.calendar', compact('events'));
     }
 
     public function destroy(Project $project)

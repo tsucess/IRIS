@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Project;
 use App\Models\Street;
+use App\Models\Task;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -123,6 +125,27 @@ class DashboardController extends Controller
                 ->groupBy('zone')
                 ->pluck('total', 'zone');
 
+            // Project analytics
+            $projectStatusChart = Project::select('status', DB::raw('count(*) as total'))
+                ->groupBy('status')
+                ->pluck('total', 'status');
+
+            $budgetData = Project::whereNotNull('budget')
+                ->select('title', 'budget', 'actual_cost')
+                ->orderByDesc('budget')
+                ->limit(10)
+                ->get();
+
+            // Task analytics
+            $taskStatusChart = Task::select('status', DB::raw('count(*) as total'))
+                ->groupBy('status')
+                ->pluck('total', 'status');
+
+            $taskPriorityChart = Task::select('priority', DB::raw('count(*) as total'))
+                ->whereNotNull('priority')
+                ->groupBy('priority')
+                ->pluck('total', 'priority');
+
             return compact(
                 'streetsData',
                 'totalUsers',
@@ -141,7 +164,11 @@ class DashboardController extends Controller
                 'incomeBrackets',
                 'infrastructure',
                 'monthlyNewResidents',
-                'populationPerZone'
+                'populationPerZone',
+                'projectStatusChart',
+                'budgetData',
+                'taskStatusChart',
+                'taskPriorityChart'
             );
         });
 

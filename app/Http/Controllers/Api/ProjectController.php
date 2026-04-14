@@ -42,10 +42,30 @@ class ProjectController extends Controller
             $query->withCount(['tasks']);
         }
 
-        $perPage = $request->get('per_page', 15);
+        // Date range filter
+        if ($request->filled('start_after')) {
+            $query->where('start_date', '>=', $request->start_after);
+        }
+        if ($request->filled('end_before')) {
+            $query->where('end_date', '<=', $request->end_before);
+        }
+
+        // Sorting: ?sort_by=title&sort_dir=asc
+        $sortBy  = in_array($request->get('sort_by'), ['title', 'status', 'start_date', 'end_date', 'created_at'])
+            ? $request->get('sort_by') : 'created_at';
+        $sortDir = $request->get('sort_dir', 'desc') === 'asc' ? 'asc' : 'desc';
+        $query->orderBy($sortBy, $sortDir);
+
+        $perPage  = min((int) $request->get('per_page', 15), 100);
         $projects = $query->paginate($perPage);
 
-        return ProjectResource::collection($projects);
+        return ProjectResource::collection($projects)
+            ->additional([
+                'meta' => [
+                    'sort_by'  => $sortBy,
+                    'sort_dir' => $sortDir,
+                ],
+            ]);
     }
 
     /**

@@ -17,6 +17,7 @@
                         <thead>
                             <tr>
                                 <th>Title</th>
+                                <th>Priority</th>
                                 <th>Status</th>
                                 <th>Assignee</th>
                                 <th>Due Date</th>
@@ -28,11 +29,16 @@
                                 <tr>
                                     <td>{{ $task->title }}</td>
                                     <td>
+                                        <span class="badge bg-{{ $task->priority_badge_color }}">
+                                            {{ ucfirst($task->priority ?? 'medium') }}
+                                        </span>
+                                    </td>
+                                    <td>
                                         <span class="badge bg-{{ $task->status == 'Completed' ? 'success' : ($task->status == 'In Progress' ? 'info' : 'warning') }}">
                                             {{ $task->status }}
                                         </span>
                                     </td>
-                                    <td>{{ $task->assignee?->name ?? 'Unassigned' }}</td>
+                                    <td>{{ $task->assignee?->firstname ?? 'Unassigned' }}</td>
                                     <td>{{ $task->due_date ?? '—' }}</td>
                                     <td>
                                         <a href="{{ route('tasks.edit', [$project, $task]) }}" class="btn btn-sm btn-warning">Edit</a>
@@ -43,7 +49,7 @@
                                     </td>
                                 </tr>
                             @empty
-                                <tr><td colspan="5" class="text-center">No tasks found.</td></tr>
+                                <tr><td colspan="6" class="text-center">No tasks found.</td></tr>
                             @endforelse
                         </tbody>
                     </table>

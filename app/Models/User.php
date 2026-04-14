@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Jobs\SendVerificationCodeJob;
 use App\Mail\VerificationCodeMail;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -9,7 +10,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements MustVerifyEmail
@@ -34,6 +34,9 @@ class User extends Authenticatable implements MustVerifyEmail
         'id_number',
         'email_verification_code',
         'email_verification_code_expires_at',
+        'two_factor_enabled',
+        'two_factor_secret',
+        'two_factor_verified_at',
     ];
 
     protected $attributes = [
@@ -95,9 +98,10 @@ class User extends Authenticatable implements MustVerifyEmail
         $this->email_verification_code_expires_at = now()->addMinutes(15);
         $this->save();
 
-        Mail::to($this->email)->send(new VerificationCodeMail($code, $this->firstname));
+        // Dispatch asynchronously via queue (non-blocking)
+        SendVerificationCodeJob::dispatch($this, $code);
 
-        Log::info('Verification code sent', ['user_id' => $this->id, 'email' => $this->email]);
+        Log::info('Verification code queued for sending', ['user_id' => $this->id, 'email' => $this->email]);
     }
 
     /**

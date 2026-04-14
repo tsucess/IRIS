@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Project;
 use App\Models\Task;
 use App\Models\User;
+use App\Notifications\TaskAssigned;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -36,10 +37,11 @@ class TaskController extends Controller
     public function store(Request $request, Project $project)
     {
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
+            'title'       => 'required|string|max:255',
             'description' => 'nullable|string',
-            'status' => 'required|string',
-            'due_date' => 'nullable|date',
+            'status'      => 'required|string',
+            'priority'    => 'required|in:low,medium,high,urgent',
+            'due_date'    => 'nullable|date',
             'assigned_to' => 'nullable|exists:users,id',
         ]);
 
@@ -51,6 +53,12 @@ class TaskController extends Controller
                 'project_id' => $project->id,
                 'created_by' => auth()->id(),
             ]);
+
+            // Notify assigned user
+            if (! empty($validated['assigned_to'])) {
+                $assignee = User::find($validated['assigned_to']);
+                $assignee?->notify(new TaskAssigned($task));
+            }
 
             return redirect()->route('tasks.index', $project)->with('success', 'Task created.');
         } catch (\Exception $e) {
@@ -95,10 +103,11 @@ class TaskController extends Controller
     public function update(Request $request, Project $project, Task $task)
     {
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
+            'title'       => 'required|string|max:255',
             'description' => 'nullable|string',
-            'status' => 'required|string',
-            'due_date' => 'nullable|date',
+            'status'      => 'required|string',
+            'priority'    => 'required|in:low,medium,high,urgent',
+            'due_date'    => 'nullable|date',
             'assigned_to' => 'nullable|exists:users,id',
         ]);
 

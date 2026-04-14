@@ -40,9 +40,21 @@
                         <label for="status" class="form-label">Status</label>
                         <select name="status" class="form-select" required>
                             @foreach(['Pending','In Progress','Completed'] as $status)
-                                <option value="{{ $status }}" 
+                                <option value="{{ $status }}"
                                     @selected(old('status', $task->status ?? 'Pending') == $status)>
                                     {{ $status }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="priority" class="form-label">Priority</label>
+                        <select name="priority" class="form-select" required>
+                            @foreach(['low' => 'Low', 'medium' => 'Medium', 'high' => 'High', 'urgent' => 'Urgent'] as $val => $label)
+                                <option value="{{ $val }}"
+                                    @selected(old('priority', $task->priority ?? 'medium') == $val)>
+                                    {{ $label }}
                                 </option>
                             @endforeach
                         </select>

@@ -22,6 +22,11 @@ class TaskController extends Controller
             $query->where('status', $request->status);
         }
 
+        // Filter by priority
+        if ($request->has('priority')) {
+            $query->where('priority', $request->priority);
+        }
+
         // Filter by assigned user
         if ($request->has('assigned_to')) {
             $query->where('assigned_to', $request->assigned_to);
@@ -38,10 +43,31 @@ class TaskController extends Controller
             $query->with($with);
         }
 
-        $perPage = $request->get('per_page', 15);
-        $tasks = $query->paginate($perPage);
+        // Due date range
+        if ($request->filled('due_after')) {
+            $query->where('due_date', '>=', $request->due_after);
+        }
+        if ($request->filled('due_before')) {
+            $query->where('due_date', '<=', $request->due_before);
+        }
 
-        return TaskResource::collection($tasks);
+        // Sorting
+        $sortBy  = in_array($request->get('sort_by'), ['title', 'status', 'priority', 'due_date', 'created_at'])
+            ? $request->get('sort_by') : 'created_at';
+        $sortDir = $request->get('sort_dir', 'desc') === 'asc' ? 'asc' : 'desc';
+        $query->orderBy($sortBy, $sortDir);
+
+        $perPage = min((int) $request->get('per_page', 15), 100);
+        $tasks   = $query->paginate($perPage);
+
+        return TaskResource::collection($tasks)
+            ->additional([
+                'meta' => [
+                    'project_id' => $project->id,
+                    'sort_by'    => $sortBy,
+                    'sort_dir'   => $sortDir,
+                ],
+            ]);
     }
 
     /**
@@ -50,10 +76,11 @@ class TaskController extends Controller
     public function store(Request $request, Project $project)
     {
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
+            'title'       => 'required|string|max:255',
             'description' => 'nullable|string',
-            'status' => 'required|string',
-            'due_date' => 'nullable|date',
+            'status'      => 'required|string',
+            'priority'    => 'nullable|in:low,medium,high,urgent',
+            'due_date'    => 'nullable|date',
             'assigned_to' => 'nullable|exists:users,id',
         ]);
 
@@ -111,10 +138,11 @@ class TaskController extends Controller
         }
 
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
+            'title'       => 'required|string|max:255',
             'description' => 'nullable|string',
-            'status' => 'required|string',
-            'due_date' => 'nullable|date',
+            'status'      => 'required|string',
+            'priority'    => 'nullable|in:low,medium,high,urgent',
+            'due_date'    => 'nullable|date',
             'assigned_to' => 'nullable|exists:users,id',
         ]);
 

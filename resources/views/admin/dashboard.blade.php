@@ -108,6 +108,26 @@
                 </x-glass-card>
             </div>
 
+            <!-- Project & Task Charts -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-2">
+                <x-glass-card class="bg-white border border-white/50 rounded-xl shadow-xl p-0">
+                    <h3 class="text-lg font-bold text-white">Project Status</h3>
+                    <canvas id="projectStatusChart" height="140"></canvas>
+                </x-glass-card>
+                <x-glass-card class="bg-white border border-white/50 rounded-xl shadow-xl p-0">
+                    <h3 class="text-lg font-bold text-white">Task Status</h3>
+                    <canvas id="taskStatusChart" height="140"></canvas>
+                </x-glass-card>
+                <x-glass-card class="bg-white border border-white/50 rounded-xl shadow-xl p-0">
+                    <h3 class="text-lg font-bold text-white">Task Priority</h3>
+                    <canvas id="taskPriorityChart" height="140"></canvas>
+                </x-glass-card>
+                <x-glass-card class="bg-white border border-white/50 rounded-xl shadow-xl p-0 lg:col-span-1">
+                    <h3 class="text-lg font-bold text-white">Budget Utilization</h3>
+                    <canvas id="budgetChart" height="140"></canvas>
+                </x-glass-card>
+            </div>
+
             <!-- Infrastructure -->
             <div class="backdrop-blur-lg bg-white/20 border border-white/30 rounded-xl shadow-xl p-6">
                 <h3 class="text-lg font-bold text-white">Infrastructure Access</h3>
@@ -247,6 +267,35 @@
                 {!! json_encode(array_values($populationPerZone->toArray())) !!},
                 'Population'
             );
+
+            // Project & Task analytics charts
+            makeChart('projectStatusChart', 'doughnut',
+                {!! json_encode($projectStatusChart->keys()) !!},
+                {!! json_encode($projectStatusChart->values()) !!},
+                'Projects'
+            );
+            makeChart('taskStatusChart', 'doughnut',
+                {!! json_encode($taskStatusChart->keys()) !!},
+                {!! json_encode($taskStatusChart->values()) !!},
+                'Tasks'
+            );
+            makeChart('taskPriorityChart', 'pie',
+                {!! json_encode($taskPriorityChart->keys()) !!},
+                {!! json_encode($taskPriorityChart->values()) !!},
+                'Priority'
+            );
+            // Budget utilization: grouped bar (budget vs actual_cost)
+            new Chart(document.getElementById('budgetChart'), {
+                type: 'bar',
+                data: {
+                    labels: {!! json_encode($budgetData->pluck('title')) !!},
+                    datasets: [
+                        { label: 'Budget',      data: {!! json_encode($budgetData->pluck('budget')) !!},      backgroundColor: '#60a5fa' },
+                        { label: 'Actual Cost', data: {!! json_encode($budgetData->pluck('actual_cost')) !!}, backgroundColor: '#f87171' },
+                    ]
+                },
+                options: { responsive: true, scales: { y: { beginAtZero: true } } }
+            });
         </script>
     @endpush
 </x-app-layout>

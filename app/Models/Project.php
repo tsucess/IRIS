@@ -2,13 +2,16 @@
 
 namespace App\Models;
 
+use App\Models\Attachment;
+use App\Models\Comment;
+use App\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Project extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, LogsActivity;
 
     protected $fillable = [
         'title',
@@ -45,6 +48,16 @@ class Project extends Model
     public function tasks()
     {
         return $this->hasMany(Task::class);
+    }
+
+    public function attachments()
+    {
+        return $this->morphMany(Attachment::class, 'attachable');
+    }
+
+    public function comments()
+    {
+        return $this->morphMany(Comment::class, 'commentable');
     }
 
     // Quick helper for counting users
