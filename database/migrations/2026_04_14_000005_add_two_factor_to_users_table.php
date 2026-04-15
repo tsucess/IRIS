@@ -9,9 +9,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->boolean('two_factor_enabled')->default(false)->after('role');
-            $table->string('two_factor_secret', 64)->nullable()->after('two_factor_enabled');
-            $table->timestamp('two_factor_verified_at')->nullable()->after('two_factor_secret');
+            if (!Schema::hasColumn('users', 'two_factor_enabled')) {
+                $table->boolean('two_factor_enabled')->default(false)->after('role');
+            }
+            if (!Schema::hasColumn('users', 'two_factor_secret')) {
+                $table->string('two_factor_secret', 64)->nullable()->after('two_factor_enabled');
+            }
+            if (!Schema::hasColumn('users', 'two_factor_verified_at')) {
+                $table->timestamp('two_factor_verified_at')->nullable()->after('two_factor_secret');
+            }
         });
     }
 
