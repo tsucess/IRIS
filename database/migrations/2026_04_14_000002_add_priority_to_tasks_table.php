@@ -8,11 +8,13 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('tasks', function (Blueprint $table) {
-            $table->enum('priority', ['low', 'medium', 'high', 'urgent'])
-                  ->default('medium')
-                  ->after('status');
-        });
+        if (!Schema::hasColumn('tasks', 'priority')) {
+            Schema::table('tasks', function (Blueprint $table) {
+                $table->enum('priority', ['low', 'medium', 'high', 'urgent'])
+                      ->default('medium')
+                      ->after('status');
+            });
+        }
     }
 
     public function down(): void
