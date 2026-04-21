@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Announcement;
 use App\Models\Project;
 use App\Models\Street;
 use App\Models\Task;
@@ -15,6 +16,28 @@ class DashboardController extends Controller
 {
     public function index(Request $request)
     {
+        $user = auth()->user();
+
+        // ── Resident dashboard (non-admin users) ─────────────────────────────
+        if (! $user->isAdmin()) {
+            $announcements = Announcement::with('author')
+                ->active()
+                ->visibleTo($user)
+                ->orderByDesc('pinned')
+                ->orderByDesc('created_at')
+                ->take(4)
+                ->get();
+
+            $myProjects = $user->projects()
+                ->withCount('tasks')
+                ->latest()
+                ->take(5)
+                ->get();
+
+            return view('resident.dashboard', compact('announcements', 'myProjects'));
+        }
+
+        // ── Admin dashboard ───────────────────────────────────────────────────
         $zoneFilter = $request->get('zone');
 
         // Create cache key based on zone filter

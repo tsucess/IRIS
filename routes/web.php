@@ -112,9 +112,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Gantt / Calendar View
     Route::get('/calendar', [ProjectController::class, 'calendar'])->name('projects.calendar');
-
-    // Community Announcements
-    Route::resource('announcements', AnnouncementController::class);
 });
 
 // Superadmin-only routes
@@ -133,3 +130,22 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/imports/residents', [ResidentImportController::class, 'showForm'])->name('imports.residents');
     Route::post('/imports/residents', [ResidentImportController::class, 'import'])->name('imports.residents.upload');
 });
+
+// ── Community Announcements ──────────────────────────────────────────────────
+// Public read routes — accessible to guests AND authenticated users
+Route::get('/announcements', [AnnouncementController::class, 'index'])->name('announcements.index');
+
+// Admin write routes must be declared BEFORE the public show route
+// so that /announcements/create is not swallowed by the {announcement} wildcard
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/admin/announcements', [AnnouncementController::class, 'manage'])->name('announcements.manage');
+    Route::get('/announcements/create', [AnnouncementController::class, 'create'])->name('announcements.create');
+    Route::post('/announcements', [AnnouncementController::class, 'store'])->name('announcements.store');
+    Route::get('/announcements/{announcement}/edit', [AnnouncementController::class, 'edit'])->name('announcements.edit');
+    Route::put('/announcements/{announcement}', [AnnouncementController::class, 'update'])->name('announcements.update');
+    Route::delete('/announcements/{announcement}', [AnnouncementController::class, 'destroy'])->name('announcements.destroy');
+    Route::patch('/announcements/{announcement}/pin', [AnnouncementController::class, 'togglePin'])->name('announcements.toggle-pin');
+});
+
+// Public show route — after create to avoid wildcard collision
+Route::get('/announcements/{announcement}', [AnnouncementController::class, 'show'])->name('announcements.show');

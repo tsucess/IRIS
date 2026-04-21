@@ -42,7 +42,7 @@ class RegisteredUserController extends Controller
             'lastname' => $request->lastname,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => UserRole::USER, // Default role
+            'role' => UserRole::USER->value, // Default role
         ]);
 
         Auth::login($user);
@@ -52,6 +52,7 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
-        return redirect()->route('verification.notice');
+        return redirect()->route('verification.notice')
+            ->with('success', 'Account created successfully! Please check your email for a 4-digit verification code.');
     }
 }

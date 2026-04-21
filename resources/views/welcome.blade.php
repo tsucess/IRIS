@@ -82,33 +82,34 @@
     {{-- <body  class=" text-[#1b1b18] "> --}}
     <header class="w-full lg:max-w-4xl max-w-[335px] text-sm mb-6 not-has-[nav]:hidden mt-5">
         @if (Route::has('login'))
-            <nav class="flex items-center justify-end gap-4">
+            <nav class="flex items-center justify-end gap-3">
+
+                {{-- Announcements — visible to everyone, guests and logged-in users --}}
+                <a href="{{ route('announcements.index') }}"
+                   class="inline-flex items-center gap-1.5 px-5 py-1.5 bg-white dark:bg-[#2a2a27] text-[#1b1b18] dark:text-[#EDEDEC] border border-[#19140035] dark:border-[#3E3E3A] hover:border-[#1915014a] dark:hover:border-[#62605b] rounded-sm text-sm leading-normal transition-colors">
+                    📢 Announcements
+                </a>
+
                 @auth
+                    {{-- Dashboard — solid blue so it stands out for logged-in users --}}
                     <a href="{{ url('/dashboard') }}"
-                        class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] border-[#19140035] hover:border-[#1915014a] border text-[#1b1b18] dark:border-[#3E3E3A] dark:hover:border-[#62605b] rounded-sm text-sm leading-normal">
-                        Dashboard
+                       class="inline-flex items-center gap-1.5 px-5 py-1.5 bg-[#2563eb] hover:bg-[#1d4ed8] text-white rounded-sm text-sm leading-normal font-medium transition-colors shadow-sm">
+                        🏠 Dashboard
                     </a>
                 @else
                     <a href="{{ route('login') }}"
-                        class="inline-block px-5 py-1.5 bg-white dark:text-[#EDEDEC] text-[#1b1b18] border border-transparent hover:border-[#19140035] dark:hover:border-[#3E3E3A] rounded-sm text-sm leading-normal">
+                       class="inline-block px-5 py-1.5 bg-white dark:bg-[#2a2a27] dark:text-[#EDEDEC] text-[#1b1b18] border border-transparent hover:border-[#19140035] dark:hover:border-[#3E3E3A] rounded-sm text-sm leading-normal transition-colors">
                         Log in
                     </a>
 
                     @if (Route::has('register'))
                         <a href="{{ route('register') }}"
-                            class="inline-block px-5 bg-white py-1.5 dark:text-[#EDEDEC] border-[#19140035] hover:border-[#1915014a] border text-[#1b1b18] dark:border-[#3E3E3A] dark:hover:border-[#62605b] rounded-sm text-sm leading-normal">
+                           class="inline-block px-5 py-1.5 bg-white dark:bg-[#2a2a27] dark:text-[#EDEDEC] border border-[#19140035] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:hover:border-[#62605b] text-[#1b1b18] rounded-sm text-sm leading-normal transition-colors">
                             Register
                         </a>
                     @endif
-                    <a href="#"
-                        class="inline-block px-5 py-1.5 bg-white dark:text-[#EDEDEC] border-[#19140035] hover:border-[#1915014a] border text-[#1b1b18] dark:border-[#3E3E3A] dark:hover:border-[#62605b] rounded-sm text-sm leading-normal">
-                        Annoucements
-                    </a>
-                    {{-- <a href="#"
-                        class="inline-block px-5 py-1.5 bg-white dark:text-[#EDEDEC] border-[#19140035] hover:border-[#1915014a] border text-[#1b1b18] dark:border-[#3E3E3A] dark:hover:border-[#62605b] rounded-sm text-sm leading-normal">
-                        Eagle Eye
-                    </a> --}}
                 @endauth
+
             </nav>
         @endif
     </header>

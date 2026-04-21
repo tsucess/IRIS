@@ -28,8 +28,34 @@
 
 select,
 input {
-    border-radius: 0.375rem !important; /* optional rounded corners */
-    border: 1px solid ash !important;
+    border-radius: 0.375rem !important;
+    border: 1px solid #d1d5db !important; /* gray-300 */
+}
+
+/*
+ * Universal fix for native <select> dropdown option visibility.
+ *
+ * The @tailwindcss/forms plugin sets `color: inherit` on <select> elements,
+ * meaning any select inside a dark section (text-white) will inherit white text.
+ * When the browser renders the native dropdown popup it uses its own white
+ * background, making white-on-white options completely invisible.
+ *
+ * Setting `color-scheme: light` forces the native popup to always render in
+ * light mode (dark text, white background) regardless of the page theme.
+ * The collapsed <select> box still respects any Tailwind text/bg classes you
+ * apply directly on the element (e.g. bg-gray-900 text-white).
+ */
+select {
+    color-scheme: light;
+}
+
+/*
+ * For explicitly dark selects (e.g. announcement forms using bg-gray-900),
+ * override back to dark so the native popup matches:
+ *   <select class="bg-gray-900 text-white dark-select" ...>
+ */
+select.dark-select {
+    color-scheme: dark;
 }
 
 

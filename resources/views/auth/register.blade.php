@@ -1,12 +1,32 @@
-<x-guest-layout >
+<x-guest-layout>
+
+    {{-- Validation error summary --}}
+    @if ($errors->any())
+        <div class="mb-4 p-4 rounded-lg bg-red-50 border border-red-300 text-sm text-red-800">
+            <p class="font-semibold mb-1">Please fix the following errors:</p>
+            <ul class="list-disc list-inside space-y-1">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <form method="POST" action="{{ route('register') }}" class="bg-white">
         @csrf
 
-        <!-- Name -->
+        <!-- First Name -->
         <div>
-            <x-input-label for="name" :value="__('Name')" />
-            <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
-            <x-input-error :messages="$errors->get('name')" class="mt-2" />
+            <x-input-label for="firstname" :value="__('First Name')" />
+            <x-text-input id="firstname" class="block mt-1 w-full" type="text" name="firstname" :value="old('firstname')" required autofocus autocomplete="given-name" />
+            <x-input-error :messages="$errors->get('firstname')" class="mt-2" />
+        </div>
+
+        <!-- Last Name -->
+        <div class="mt-4">
+            <x-input-label for="lastname" :value="__('Last Name')" />
+            <x-text-input id="lastname" class="block mt-1 w-full" type="text" name="lastname" :value="old('lastname')" required autocomplete="family-name" />
+            <x-input-error :messages="$errors->get('lastname')" class="mt-2" />
         </div>
 
         <!-- Email Address -->

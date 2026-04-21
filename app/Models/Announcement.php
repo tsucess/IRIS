@@ -38,9 +38,15 @@ class Announcement extends Model
         });
     }
 
-    public function scopeVisibleTo($query, User $user)
+    public function scopeVisibleTo($query, ?User $user = null)
     {
         return $query->where(function ($q) use ($user) {
+            // Guests (unauthenticated) only see announcements meant for everyone
+            if ($user === null) {
+                $q->where('audience', 'all');
+                return;
+            }
+
             $q->where('audience', 'all')
               ->orWhere(function ($q2) use ($user) {
                   if ($user->isAdmin()) {

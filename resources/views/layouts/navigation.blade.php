@@ -34,17 +34,25 @@
                         {{ __('Calendar') }}
                     </x-nav-link>
 
-                    <x-nav-link :href="route('announcements.index')" :active="request()->routeIs('announcements.*')">
-                        {{ __('Announcements') }}
-                    </x-nav-link>
+                    @if(auth()->user()->isAdmin())
+                        <x-nav-link :href="route('announcements.manage')" :active="request()->routeIs('announcements.manage') || request()->routeIs('announcements.create') || request()->routeIs('announcements.edit')">
+                            {{ __('Announcements') }}
+                        </x-nav-link>
+                    @else
+                        <x-nav-link :href="route('announcements.index')" :active="request()->routeIs('announcements.index') || request()->routeIs('announcements.show')">
+                            {{ __('Announcements') }}
+                        </x-nav-link>
+                    @endif
 
                     <x-nav-link :href="route('complaints.index')" :active="request()->routeIs('complaints.*')">
                         {{ __('Requests') }}
                     </x-nav-link>
 
-                    <x-nav-link :href="route('admin.users.search')" :active="request()->routeIs('admin.users.search')" class="text-gray-700 hover:text-indigo-600">
-                        {{ __('SmartSearch') }}
-                    </x-nav-link>
+                    @if(auth()->user()->isAdmin())
+                        <x-nav-link :href="route('admin.users.search')" :active="request()->routeIs('admin.users.search')" class="text-gray-700 hover:text-indigo-600">
+                            {{ __('SmartSearch') }}
+                        </x-nav-link>
+                    @endif
                 </div>
             </div>
 
@@ -158,13 +166,23 @@
             <x-responsive-nav-link :href="route('projects.index')" :active="request()->routeIs('projects.*')">
                 {{ __('Projects') }}
             </x-responsive-nav-link>
+
+            @if(auth()->user()->isAdmin())
+                <x-responsive-nav-link :href="route('announcements.manage')" :active="request()->routeIs('announcements.manage') || request()->routeIs('announcements.create') || request()->routeIs('announcements.edit')">
+                    {{ __('Announcements') }}
+                </x-responsive-nav-link>
+            @else
+                <x-responsive-nav-link :href="route('announcements.index')" :active="request()->routeIs('announcements.index') || request()->routeIs('announcements.show')">
+                    {{ __('Announcements') }}
+                </x-responsive-nav-link>
+            @endif
         </div>
 
 
         <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-gray-200">
             <div class="px-4">
-                <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
+                <div class="font-medium text-base text-gray-800">{{ Auth::user()->full_name }}</div>
                 <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
             </div>
 
