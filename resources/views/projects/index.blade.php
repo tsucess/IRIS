@@ -279,9 +279,11 @@
                                     <td class="px-4 py-2">{{ $project->start_date ?? '—' }}</td>
                                     <td class="px-4 py-2">{{ $project->end_date ?? '—' }}</td>
                                     <td class="py-2 px-4 space-x-2">
-                                        <a href="{{ route('projects.show', $project) }}"
-                                            class="px-3 py-1 bg-sky-200 text-sky-800 rounded shadow hover:bg-sky-300 transition">👁️
-                                        </a>
+                                        @if(auth()->user()->role !== 'user')
+                                            <a href="{{ route('projects.show', $project) }}"
+                                                class="px-3 py-1 bg-sky-200 text-sky-800 rounded shadow hover:bg-sky-300 transition">👁️
+                                            </a>
+                                        @endif
 
                                         @can('update', $project)
                                             <a href="{{ route('projects.edit', $project) }}"
