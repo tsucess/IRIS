@@ -6,12 +6,12 @@
     </x-slot>
 
     <!-- Apple Glassmorphism Background -->
-    <div class="min-h-screen bg-gradient-to-br from-blue-900/60 via-indigo-900/40 to-purple-800/60 text-white p-6">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-8">
+    <div class="min-h-screen bg-gradient-to-br from-blue-900/60 via-indigo-900/40 to-purple-800/60 text-white p-3 sm:p-6">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6 sm:space-y-8">
 
             <!-- Welcome Card -->
-            <div class="backdrop-blur-lg bg-white/20 border border-white/30 overflow-hidden shadow-xl sm:rounded-lg p-6">
-                <div class="text-xl font-bold">
+            <div class="backdrop-blur-lg bg-white/20 border border-white/30 overflow-hidden shadow-xl sm:rounded-lg p-4 sm:p-6">
+                <div class="text-base sm:text-xl font-bold">
                     {{ __('Welcome to iris, ') }}
                     <span class="text-dark">{{ Auth::user()->firstname }} {{ Auth::user()->lastname }}</span> 🎉
                 </div>
@@ -26,12 +26,12 @@
             </div>
 
             <!-- Filter Form -->
-            <div class="backdrop-blur-lg bg-white/20 border border-white/30 rounded-xl shadow-xl p-6 mb-3 mt-2">
-                <form method="GET" action="{{ route('dashboard') }}" class="flex flex-wrap items-center gap-2">
-                    <div>
-                        <label for="zone" class="font-semibold">Filter by Zone:</label>
+            <div class="backdrop-blur-lg bg-white/20 border border-white/30 rounded-xl shadow-xl p-4 sm:p-6 mb-3 mt-2">
+                <form method="GET" action="{{ route('dashboard') }}" class="flex flex-col sm:flex-row sm:flex-wrap sm:items-end gap-3">
+                    <div class="flex flex-col w-full sm:w-auto">
+                        <label for="zone" class="font-semibold text-sm mb-1">Filter by Zone:</label>
                         <select name="zone" id="zone"
-                            class="border-gray-300 rounded-md shadow-sm text-black px-2" style="width: 10rem;">
+                            class="border-gray-300 rounded-md shadow-sm text-black px-2 py-2 w-full sm:w-40">
                             <option value="">All Zones </option>
                             @foreach ($zones as $zone)
                                 <option value="{{ $zone }}" {{ $zone == $zoneFilter ? 'selected' : '' }}>
@@ -40,17 +40,19 @@
                             @endforeach
                         </select>
                     </div>
-                    <button type="submit"
-                        class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-white hover:bg-blue-700">
-                        Filter
-                    </button>
-                    <a href="{{ route('dashboard') }}" class="text-sm text-gray-200 underline hover:text-white">
-                        Clear Filter
-                    </a>
+                    <div class="flex items-center gap-3">
+                        <button type="submit"
+                            class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-white hover:bg-blue-700">
+                            Filter
+                        </button>
+                        <a href="{{ route('dashboard') }}" class="text-sm text-gray-200 underline hover:text-white">
+                            Clear Filter
+                        </a>
+                    </div>
                 </form>
-                <a href="{{ route('exports') }}" class="text-sm text-blue-200 underline hover:text-white">
-                        Filter Data
-                    </a>
+                <a href="{{ route('exports') }}" class="inline-block mt-3 text-sm text-blue-200 underline hover:text-white">
+                    Filter Data
+                </a>
             </div>
 
 

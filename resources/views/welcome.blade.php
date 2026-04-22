@@ -33,8 +33,8 @@
 
         body {
             margin: 0;
-            overflow: hidden;
             background: #000;
+            min-height: 100vh;
         }
 
 
@@ -82,7 +82,7 @@
     {{-- <body  class=" text-[#1b1b18] "> --}}
     <header class="w-full lg:max-w-4xl max-w-[335px] text-sm mb-6 not-has-[nav]:hidden mt-5">
         @if (Route::has('login'))
-            <nav class="flex items-center justify-end gap-3">
+            <nav class="flex flex-wrap items-center justify-end gap-2 sm:gap-3">
 
                 {{-- Announcements — visible to everyone, guests and logged-in users --}}
                 <a href="{{ route('announcements.index') }}"
@@ -129,9 +129,9 @@
 
 
             </div>
-            <div class="bg-[#fff2f2] dark:bg-[#1D0002] relative lg:-ml-px -mb-px lg:mb-0 rounded-t-lg lg:rounded-t-none lg:rounded-r-lg aspect-[335/376] lg:aspect-auto w-full lg:w-[438px] shrink-0 overflow-hidden"
-                style="height: 30rem">
-                <img src={{ url('../images/ilisanremoroad.jpg') }} alt="Entrance of Ilisan Remo">
+            <div class="bg-[#fff2f2] dark:bg-[#1D0002] relative lg:-ml-px -mb-px lg:mb-0 rounded-t-lg lg:rounded-t-none lg:rounded-r-lg aspect-[335/376] lg:aspect-auto w-full lg:w-[438px] lg:h-[30rem] shrink-0 overflow-hidden">
+                <img src="{{ url('../images/ilisanremoroad.jpg') }}" alt="Entrance of Ilisan Remo"
+                     class="w-full h-full object-cover">
 
                 <div
                     class="absolute inset-0 rounded-t-lg lg:rounded-t-none lg:rounded-r-lg shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d]">

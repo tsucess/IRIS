@@ -28,8 +28,8 @@
 
         body {
             margin: 0;
-            overflow: hidden;
             background: #000;
+            min-height: 100vh;
         }
 
         .page-loader {
@@ -70,16 +70,16 @@
     </div>
 
 
-    <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 ">
+    <div class="min-h-screen flex flex-col sm:justify-center items-center py-6 sm:pt-0 px-4">
         <div id="particles-background"></div>
         @vite('resources/js/particles.js')
         <div class="bg-white p-2 mx-auto text-center" style="border-radius: 50%;">
             <a href="/" >
-                <x-application-logo2 class="w-40 h-40 fill-current text-gray-500" />
+                <x-application-logo2 class="w-24 h-24 sm:w-40 sm:h-40 fill-current text-gray-500" />
             </a>
         </div>
 
-        <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg  z-10">
+        <div class="w-full sm:max-w-md mt-6 px-4 sm:px-6 py-4 bg-white shadow-md overflow-hidden rounded-lg sm:rounded-lg z-10">
 
             {{ $slot }}
         </div>
