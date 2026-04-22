@@ -31,27 +31,30 @@ class ProjectPolicy
         return $project->users->contains($user->id);
     }
 
-    /** Any verified user can create a project. */
+    /** Only project managers (and admins via before) can create a project. */
     public function create(User $user): bool
     {
-        return $user->hasVerifiedEmail();
+        return $user->hasVerifiedEmail() && $user->role === 'project_manager';
     }
 
-    /** Only project members can edit a project. */
+    /** Only project managers who are project members can edit a project. */
     public function update(User $user, Project $project): bool
     {
-        return $project->users->contains($user->id);
+        return $user->role === 'project_manager'
+            && $project->users->contains($user->id);
     }
 
-    /** Only project members can delete a project. */
+    /** Only project managers who are project members can delete a project. */
     public function delete(User $user, Project $project): bool
     {
-        return $project->users->contains($user->id);
+        return $user->role === 'project_manager'
+            && $project->users->contains($user->id);
     }
 
-    /** Assign users — project member only. */
+    /** Only project managers who are project members can assign users. */
     public function assignUsers(User $user, Project $project): bool
     {
-        return $project->users->contains($user->id);
+        return $user->role === 'project_manager'
+            && $project->users->contains($user->id);
     }
 }

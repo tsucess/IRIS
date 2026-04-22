@@ -225,12 +225,14 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
             <!-- Add Project Button -->
-            <div class="mb-4">
-                <a href="{{ route('projects.create') }}"
-                    class="inline-flex items-center px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-lg hover:bg-blue-700 transition">
-                    + Add New Project
-                </a>
-            </div>
+            @can('create', App\Models\Project::class)
+                <div class="mb-4">
+                    <a href="{{ route('projects.create') }}"
+                        class="inline-flex items-center px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-lg hover:bg-blue-700 transition">
+                        + Add New Project
+                    </a>
+                </div>
+            @endcan
 
             <!-- Success Message -->
             @if (session('success'))
@@ -281,18 +283,22 @@
                                             class="px-3 py-1 bg-sky-200 text-sky-800 rounded shadow hover:bg-sky-300 transition">👁️
                                         </a>
 
-                                        <a href="{{ route('projects.edit', $project) }}"
-                                            class="px-3 py-1 bg-yellow-400 rounded shadow hover:bg-yellow-500 transition">✏️
-                                        </a>
+                                        @can('update', $project)
+                                            <a href="{{ route('projects.edit', $project) }}"
+                                                class="px-3 py-1 bg-yellow-400 rounded shadow hover:bg-yellow-500 transition">✏️
+                                            </a>
+                                        @endcan
 
-                                        <form action="{{ route('projects.destroy', $project) }}" method="POST"
-                                            class="inline-block" onsubmit="return confirm('Delete this project?')">
-                                            @csrf @method('DELETE')
-                                            <button type="submit"
-                                                class="px-3 py-1 bg-red-500 text-white rounded shadow hover:bg-red-600 transition">
-                                                🗑️
-                                            </button>
-                                        </form>
+                                        @can('delete', $project)
+                                            <form action="{{ route('projects.destroy', $project) }}" method="POST"
+                                                class="inline-block" onsubmit="return confirm('Delete this project?')">
+                                                @csrf @method('DELETE')
+                                                <button type="submit"
+                                                    class="px-3 py-1 bg-red-500 text-white rounded shadow hover:bg-red-600 transition">
+                                                    🗑️
+                                                </button>
+                                            </form>
+                                        @endcan
                                     </td>
                                 </tr>
                             @empty

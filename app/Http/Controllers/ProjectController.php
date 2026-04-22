@@ -23,6 +23,8 @@ class ProjectController extends Controller
 
     public function create()
     {
+        $this->authorize('create', Project::class);
+
         // Only load id and name for dropdowns (performance optimization)
         $streets = Street::select('id', 'name')->orderBy('name')->get();
         $users = User::select('id', 'firstname', 'lastname', 'email')
@@ -35,6 +37,8 @@ class ProjectController extends Controller
 
     public function store(Request $request)
     {
+        $this->authorize('create', Project::class);
+
         $data = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -78,6 +82,8 @@ class ProjectController extends Controller
 
     public function edit(Project $project)
     {
+        $this->authorize('update', $project);
+
         // Load project with relationships to avoid N+1
         $project->load(['users', 'street']);
 
@@ -93,6 +99,8 @@ class ProjectController extends Controller
 
     public function update(Request $request, Project $project)
     {
+        $this->authorize('update', $project);
+
         $data = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -262,6 +270,8 @@ class ProjectController extends Controller
 
     public function destroy(Project $project)
     {
+        $this->authorize('delete', $project);
+
         try {
             $projectTitle = $project->title;
             $project->delete();
