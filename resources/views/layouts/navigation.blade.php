@@ -16,9 +16,11 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
 
-                    <x-nav-link :href="route('streets.index')" :active="request()->routeIs('streets.*')">
-                        {{ __('Streets') }}
-                    </x-nav-link>
+                    @if(auth()->user()->role !== 'user')
+                        <x-nav-link :href="route('streets.index')" :active="request()->routeIs('streets.*')">
+                            {{ __('Streets') }}
+                        </x-nav-link>
+                    @endif
 
                     @can('view-any', \App\Models\User::class)
                         <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*') && !request()->routeIs('admin.users.search')">
@@ -154,9 +156,11 @@
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
 
-            <x-responsive-nav-link :href="route('streets.index')" :active="request()->routeIs('streets.*')">
-                {{ __('Streets') }}
-            </x-responsive-nav-link>
+            @if(auth()->user()->role !== 'user')
+                <x-responsive-nav-link :href="route('streets.index')" :active="request()->routeIs('streets.*')">
+                    {{ __('Streets') }}
+                </x-responsive-nav-link>
+            @endif
 
             @can('view-any', \App\Models\User::class)
                 <x-responsive-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
