@@ -8,22 +8,9 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-
     <!-- Select2 CSS -->
     <link rel="stylesheet" href="{{ asset('css/select2.min.css') }}">
 
-
-    <!-- jQuery -->
-    <script src="{{ asset('js/jquery.min.js') }}"></script>
-
-    <!-- Select2 JS -->
-    <script src="{{ asset('js/select2.min.js') }}"></script>
-
-    <!-- Chart.js -->
-    <script src="{{ asset('js/chart/chart.js') }}"></script>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="{{ asset('fonts/css/all.css') }}">
 
@@ -52,6 +39,16 @@
             {{ $slot }}
         </main>
     </div>
+
+    <!-- jQuery -->
+    <script src="{{ asset('js/jquery.min.js') }}"></script>
+
+    <!-- Select2 JS -->
+    <script src="{{ asset('js/select2.min.js') }}"></script>
+
+    <!-- Chart.js -->
+    <script src="{{ asset('js/chart/chart.js') }}"></script>
+
     @stack('scripts')
 </body>
 
