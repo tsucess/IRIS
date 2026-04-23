@@ -29,10 +29,10 @@
 
                 {{-- Right-side actions (desktop) --}}
                 <div class="hidden sm:flex items-center gap-4">
-                    <a href="{{ route('announcements.index') }}"
+                    {{-- <a href="{{ route('announcements.index') }}"
                        class="text-sm text-white/70 hover:text-white transition-colors {{ request()->routeIs('announcements.index') ? 'text-white font-semibold' : '' }}">
                         📢 Announcements
-                    </a>
+                    </a> --}}
 
                     @auth
                         <a href="{{ route('dashboard') }}"
@@ -84,10 +84,10 @@
         {{-- Mobile dropdown menu --}}
         <div :class="{ 'block': open, 'hidden': !open }" class="hidden sm:hidden border-t border-white/10">
             <div class="px-4 py-3 space-y-2">
-                <a href="{{ route('announcements.index') }}"
+                {{-- <a href="{{ route('announcements.index') }}"
                    class="block py-2 text-sm text-white/80 hover:text-white transition-colors {{ request()->routeIs('announcements.index') ? 'text-white font-semibold' : '' }}">
                     📢 Announcements
-                </a>
+                </a> --}}
 
                 @auth
                     <a href="{{ route('dashboard') }}"
