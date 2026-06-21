@@ -281,7 +281,7 @@
                     <html>
                         <head>
                             <title>ID Card</title>
-                            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+                            <link rel="stylesheet" href="{{ asset('vendor/bootstrap/bootstrap.min.css') }}">
                             <style>
                                 body { display:flex; justify-content:center; align-items:center; height:100vh; background:#f8f9fa; }
                                 ${document.querySelector('style').innerHTML}
