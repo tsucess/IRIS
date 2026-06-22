@@ -59,7 +59,7 @@
                 <div class="backdrop-blur-lg bg-white/20 border border-white/30 rounded-2xl shadow-xl overflow-hidden">
                     <div class="flex items-center justify-between px-5 py-4 border-b border-white/20">
                         <h2 class="font-semibold text-white">📢 Recent Announcements</h2>
-                        <a href="{{ route('announcements.index') }}" class="text-blue-200 text-sm hover:text-white hover:underline">View all</a>
+                        {{-- <a href="{{ route('announcements.index') }}" class="text-blue-200 text-sm hover:text-white hover:underline">View all</a> --}}
                     </div>
                     <div class="divide-y divide-white/10">
                         @forelse($announcements as $ann)
@@ -87,7 +87,7 @@
                 <div class="backdrop-blur-lg bg-white/20 border border-white/30 rounded-2xl shadow-xl overflow-hidden">
                     <div class="flex items-center justify-between px-5 py-4 border-b border-white/20">
                         <h2 class="font-semibold text-white">🏗️ My Projects</h2>
-                        <a href="{{ route('projects.index') }}" class="text-blue-200 text-sm hover:text-white hover:underline">View all</a>
+                        {{-- <a href="{{ route('projects.index') }}" class="text-blue-200 text-sm hover:text-white hover:underline">View all</a> --}}
                     </div>
                     <div class="divide-y divide-white/10">
                         @forelse($myProjects as $project)
