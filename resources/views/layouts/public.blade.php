@@ -8,19 +8,20 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="font-sans antialiased min-h-screen bg-gradient-to-br from-blue-900 via-indigo-900 to-purple-900 text-white" style="background-color:#1e1b4b">
+<body class="bg-gradient-to-br from-blue-900/60 via-indigo-900/40 to-purple-800/60 text-white p-3 sm:p-0">
 
     {{-- Top Navigation Bar --}}
-    <nav id="publicNav" class="bg-black/40 backdrop-blur-lg border-b border-white/10 sticky top-0 z-50 relative">
+    {{-- <nav id="publicNav" class="bg-black/40 backdrop-blur-lg border-b border-white/10 sticky top-0 z-50 relative"> --}}
+    <nav id="publicNav" class="bg-white backdrop-blur-lg border-b border-white/10 sticky top-0 z-50 relative">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
 
                 {{-- Brand --}}
                 <a href="{{ route('announcements.index') }}" class="flex items-center gap-3 group">
-                    <x-application-logo class="h-8 w-auto fill-current text-white" style="width:2rem;" />
-                    <span class="font-bold text-base sm:text-lg tracking-wide group-hover:text-blue-300 transition-colors truncate max-w-[180px] sm:max-w-none">
+                    <x-application-logo class="h-8 w-auto fill-current text-black" style="width:2rem;" />
+                    {{-- <span class="font-bold text-base sm:text-lg tracking-wide group-hover:text-blue-300 transition-colors truncate max-w-[180px] sm:max-w-none">
                         {{ config('app.name') }}
-                    </span>
+                    </span> --}}
                 </a>
 
                 {{-- Right-side actions (desktop) --}}
@@ -32,7 +33,7 @@
 
                     @auth
                         <a href="{{ route('dashboard') }}"
-                           class="text-sm text-white/70 hover:text-white transition-colors">
+                           class="text-sm text-black hover:text-black transition-colors">
                             Dashboard
                         </a>
                         @if(auth()->user()->isAdmin())
@@ -44,7 +45,7 @@
                         <form method="POST" action="{{ route('logout') }}" class="inline">
                             @csrf
                             <button type="submit"
-                                    class="text-sm text-white/50 hover:text-white transition-colors">
+                                    class="text-sm text-black hover:text-black transition-colors">
                                 Log Out
                             </button>
                         </form>
@@ -119,12 +120,12 @@
     </nav>
 
     {{-- Page Content --}}
-    <main>
+    <main class="">
         {{ $slot }}
     </main>
 
     {{-- Minimal footer --}}
-    <footer class="mt-16 border-t border-white/10 py-6 text-center text-white/30 text-sm">
+    <footer class="mt-16 border-t border-white/10 py-6 text-center text-sm bg-gradient-to-br from-blue-900/60 via-indigo-900/40 to-purple-800/60">
         &copy; {{ date('Y') }} {{ config('app.name') }}. All rights reserved.
     </footer>
 

@@ -1,16 +1,17 @@
 <x-public-layout>
 
     {{-- ── Hero header ────────────────────────────────────────────────────── --}}
-    <div class="relative overflow-hidden border-b border-white/10 bg-black/20 backdrop-blur-sm">
+    {{-- <div class="relative overflow-hidden border-b border-white/10 bg-black/20 backdrop-blur-sm"> --}}
+    <div class="relative overflow-hidden font-sans antialiased bg-gradient-to-br from-blue-900 via-indigo-900 to-purple-900 text-black" style="background-color:#1e1b4b  ">
         <div class="max-w-5xl mx-auto px-6 py-14 text-center">
             <span class="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-blue-300
                          bg-blue-500/15 border border-blue-400/30 rounded-full px-4 py-1.5 mb-5">
                 📢 Community Board
             </span>
-            <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight leading-tight">
+            <h1 class="text-4xl text-white sm:text-5xl font-extrabold tracking-tight leading-tight">
                 Announcements
             </h1>
-            <p class="mt-3 text-white/50 text-base max-w-lg mx-auto">
+            <p class="mt-3 text-white text-base max-w-lg mx-auto">
                 Stay up to date with the latest news and notices from the community.
             </p>
         </div>
@@ -96,10 +97,10 @@
         @if($announcements->isEmpty())
             <div class="flex flex-col items-center justify-center py-24 text-center">
                 <div class="text-6xl mb-4 opacity-40">📭</div>
-                <p class="text-white/40 text-base">No announcements yet. Check back soon.</p>
+                <p class="text-black text-base">No announcements yet. Check back soon.</p>
                 @guest
                     <a href="{{ route('login') }}"
-                       class="mt-5 inline-flex items-center gap-2 text-sm text-blue-400 hover:text-blue-300 underline transition-colors">
+                       class="mt-5 inline-flex items-center gap-2 text-sm text-black hover:text-black-300 transition-colors">
                         Log in to see more
                     </a>
                 @endguest
