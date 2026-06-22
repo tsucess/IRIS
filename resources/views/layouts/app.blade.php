@@ -11,10 +11,7 @@
     <!-- Select2 CSS -->
     <link rel="stylesheet" href="{{ asset('css/select2.min.css') }}">
 
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="{{ asset('fonts/css/all.css') }}">
-
-    <!-- Scripts -->
+    <!-- Scripts (includes Font Awesome bundled via Vite) -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 

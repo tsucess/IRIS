@@ -8,6 +8,13 @@
 
             <div id="alertBox"></div>
 
+            <div class="flex justify-end">
+                <a href="{{ route('projects.allocations.index', $project) }}"
+                    class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white text-sm rounded-lg shadow hover:bg-indigo-700 transition">
+                    📦 Resource Allocations
+                </a>
+            </div>
+
             {{-- Add Task Form --}}
             <div class="backdrop-blur-lg bg-white/20 border border-white/30 rounded-xl shadow-xl p-6">
                 <h3 class="text-white font-semibold text-lg mb-4">+ Add New Task</h3>

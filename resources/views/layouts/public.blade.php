@@ -6,8 +6,6 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $title ?? 'Announcements' }} — {{ config('app.name') }}</title>
 
-    <link rel="stylesheet" href="{{ asset('fonts/css/all.css') }}">
-
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="font-sans antialiased min-h-screen bg-gradient-to-br from-blue-900 via-indigo-900 to-purple-900 text-white" style="background-color:#1e1b4b">

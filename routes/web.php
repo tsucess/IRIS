@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\DecisionSupportController;
+use App\Http\Controllers\Admin\OccupationController;
+use App\Http\Controllers\Admin\ParticipationTrendController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Admin\UserSearchController;
 use App\Http\Controllers\AnnouncementController;
@@ -12,6 +15,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ResidentExtendedController;
 use App\Http\Controllers\ResidentImportController;
+use App\Http\Controllers\ResourceAllocationController;
 use App\Http\Controllers\SessionManagementController;
 use App\Http\Controllers\StreetController;
 use App\Http\Controllers\Superadmin\SystemSettingsController;
@@ -58,6 +62,19 @@ Route::middleware(['auth', 'admin', 'throttle:100,1'])->prefix('admin')->name('a
     Route::get('/users/search', [UserSearchController::class, 'index'])->name('users.search');
     Route::get('/users/search-results', [UserSearchController::class, 'search'])->name('users.search.results');
     Route::get('/users/{user}/view', [UserSearchController::class, 'view'])->name('users.view');
+
+    // Occupation Management (admin)
+    Route::resource('occupations', OccupationController::class)->except(['show']);
+
+    // Community Participation Trend Analysis
+    Route::get('/analytics/participation', [ParticipationTrendController::class, 'index'])
+        ->name('analytics.participation');
+    Route::get('/analytics/participation/data', [ParticipationTrendController::class, 'data'])
+        ->name('analytics.participation.data');
+
+    // Decision Support Module
+    Route::get('/decision-support', [DecisionSupportController::class, 'index'])
+        ->name('decision-support');
 });
 
 require __DIR__.'/auth.php';
@@ -81,6 +98,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::put('/tasks/{task}', [ProjectController::class, 'updateTask'])->name('projects.tasks.update');
         Route::delete('/tasks/{task}', [ProjectController::class, 'deleteTask'])->name('projects.tasks.delete');
     });
+
+    // Resource Allocations (nested under projects)
+    Route::prefix('projects/{project}')->name('projects.')->group(function () {
+        Route::get('/allocations', [ResourceAllocationController::class, 'index'])->name('allocations.index');
+        Route::get('/allocations/create', [ResourceAllocationController::class, 'create'])->name('allocations.create');
+        Route::post('/allocations', [ResourceAllocationController::class, 'store'])->name('allocations.store');
+        Route::get('/allocations/{allocation}/edit', [ResourceAllocationController::class, 'edit'])->name('allocations.edit');
+        Route::put('/allocations/{allocation}', [ResourceAllocationController::class, 'update'])->name('allocations.update');
+        Route::delete('/allocations/{allocation}', [ResourceAllocationController::class, 'destroy'])->name('allocations.destroy');
+    });
+    Route::get('/allocations', [ResourceAllocationController::class, 'overview'])->name('allocations.overview');
 
     // File Attachments (polymorphic)
     Route::post('/attachments', [AttachmentController::class, 'store'])->name('attachments.store');

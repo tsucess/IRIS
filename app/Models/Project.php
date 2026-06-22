@@ -60,6 +60,11 @@ class Project extends Model
         return $this->morphMany(Comment::class, 'commentable');
     }
 
+    public function allocations()
+    {
+        return $this->hasMany(ResourceAllocation::class);
+    }
+
     // Quick helper for counting users
     public function getUsersCountAttribute()
     {

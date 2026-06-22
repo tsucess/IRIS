@@ -17,7 +17,12 @@ return new class extends Migration
             });
         } else {
             // Column exists (from original create_tasks_table) but may be missing 'urgent' — upgrade it.
-            DB::statement("ALTER TABLE tasks MODIFY COLUMN priority ENUM('low', 'medium', 'high', 'urgent') NOT NULL DEFAULT 'medium'");
+            // MySQL/MariaDB supports ENUM modification via raw ALTER. SQLite stores enums as TEXT with a
+            // CHECK constraint and doesn't support MODIFY COLUMN, so we skip the upgrade in that case.
+            $driver = DB::connection()->getDriverName();
+            if (in_array($driver, ['mysql', 'mariadb'], true)) {
+                DB::statement("ALTER TABLE tasks MODIFY COLUMN priority ENUM('low', 'medium', 'high', 'urgent') NOT NULL DEFAULT 'medium'");
+            }
         }
     }
 

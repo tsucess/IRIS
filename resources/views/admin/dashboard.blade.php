@@ -25,6 +25,30 @@
                 <x-stat-card title="Projects" :value="$totalProjects" />
             </div>
 
+            <!-- Quick links to admin modules -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <a href="{{ route('admin.occupations.index') }}"
+                    class="backdrop-blur-md bg-white/20 border border-white/30 rounded-xl shadow hover:scale-105 transition p-4 text-center">
+                    <div class="text-2xl">💼</div>
+                    <div class="font-semibold mt-1">Occupations</div>
+                </a>
+                <a href="{{ route('allocations.overview') }}"
+                    class="backdrop-blur-md bg-white/20 border border-white/30 rounded-xl shadow hover:scale-105 transition p-4 text-center">
+                    <div class="text-2xl">📦</div>
+                    <div class="font-semibold mt-1">Resource Allocations</div>
+                </a>
+                <a href="{{ route('admin.analytics.participation') }}"
+                    class="backdrop-blur-md bg-white/20 border border-white/30 rounded-xl shadow hover:scale-105 transition p-4 text-center">
+                    <div class="text-2xl">📈</div>
+                    <div class="font-semibold mt-1">Participation Trends</div>
+                </a>
+                <a href="{{ route('admin.decision-support') }}"
+                    class="backdrop-blur-md bg-white/20 border border-white/30 rounded-xl shadow hover:scale-105 transition p-4 text-center">
+                    <div class="text-2xl">🧭</div>
+                    <div class="font-semibold mt-1">Decision Support</div>
+                </a>
+            </div>
+
             <!-- Filter Form -->
             <div class="backdrop-blur-lg bg-white/20 border border-white/30 rounded-xl shadow-xl p-4 sm:p-6 mb-3 mt-2">
                 <form method="GET" action="{{ route('dashboard') }}" class="flex flex-col sm:flex-row sm:flex-wrap sm:items-end gap-3">

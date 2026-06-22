@@ -13,6 +13,7 @@ class ResidentExtended extends Model
 
     protected $fillable = [
         'user_id',
+        'occupation_id',
         'middle_name',
         'gender',
         'date_of_birth',
@@ -52,5 +53,10 @@ class ResidentExtended extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function occupationRef()
+    {
+        return $this->belongsTo(Occupation::class, 'occupation_id');
     }
 }
